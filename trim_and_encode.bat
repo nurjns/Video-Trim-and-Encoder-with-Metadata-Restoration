@@ -248,7 +248,7 @@ for %%F in (*.mp4) do (
 									set "CPU_USED=8"
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
-								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libaom-av1 -crf !CRF_WERT! -cpu-used !CPU_USED! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
+								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libaom-av1 -crf !CRF_WERT! -b:v 0 -cpu-used !CPU_USED! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							)
 						)
 
