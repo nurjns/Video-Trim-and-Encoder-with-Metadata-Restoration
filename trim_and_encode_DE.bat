@@ -80,7 +80,7 @@ goto ASK_CRF
 :CRF_OK
 
 :: Benutzerabfrage: Zeitzone
-:: Automatisch Sommer-/Winterzeit erkennen für Deutschland
+:: Automatisch Sommer-/Winterzeit erkennen fÃ¼r Deutschland
 for /f "usebackq delims=" %%i in (`powershell -NoProfile -Command "$tz = [System.TimeZoneInfo]::FindSystemTimeZoneById('W. Europe Standard Time'); $now = Get-Date; if($tz.IsDaylightSavingTime($now)) {'+02:00'} else {'+01:00'}"`) do set "SYSTEM_TZ=%%i"
 
 set /p "TIMEZONE_NECESSARY=Muss Zeitzone in Datei geschrieben werden? Notwendig bei Videos ohne GPS-Daten (y/n): "
@@ -116,7 +116,7 @@ if /i "%REMOVE_AUDIO%"=="y" (
 
 :: Schleife durch alle MP4-Dateien
 for %%F in (*.mp4) do (
-	:: Prüfen ob bereits verarbeitetes Video (enthält _crf, _cut oder _AV1)
+	:: PrÃ¼fen ob bereits verarbeitetes Video (enthÃ¤lt _crf, _cut oder _AV1)
 	set "IS_PROCESSED=0"
 	echo %%F | findstr /i "_crf" >nul && set "IS_PROCESSED=1"
 	echo %%F | findstr /i "_cut" >nul && set "IS_PROCESSED=1"
@@ -125,25 +125,25 @@ for %%F in (*.mp4) do (
 	if !IS_PROCESSED! == 1 (
 		echo [OK] Ignoriert: %%F - bereits verarbeitetes Video
 	) else (
-		:: Prüfen ob die Datei ein gültiges Video ist
+		:: PrÃ¼fen ob die Datei ein gÃ¼ltiges Video ist
 		ffprobe -v error -select_streams v:0 -show_entries format=duration -of default=nokey=1:noprint_wrappers=1 "%%F" >nul 2>&1
 		if !errorlevel! NEQ 0 (
 			echo [FEHLER] Ignoriert: %%F - ungueltige oder beschaedigte Videodatei
 		) else (
-			:: Prüfen ob bereits ein gerendertes Video mit EXAKT den gleichen Einstellungen existiert
+			:: PrÃ¼fen ob bereits ein gerendertes Video mit EXAKT den gleichen Einstellungen existiert
 			set "BASENAME=%%~nF"
 			set "RENDERED_EXISTS=0"
 
-			:: Prüfen ob ein Video ohne CRF (nur _cut) existiert und aktuell auch ohne CRF verarbeitet werden soll
+			:: PrÃ¼fen ob ein Video ohne CRF (nur _cut) existiert und aktuell auch ohne CRF verarbeitet werden soll
 			if "%CRF_WERT%"=="" (
 				if exist "!BASENAME!_cut.mp4" set "RENDERED_EXISTS=1"
 			) else (
-				:: CRF-Wert ist gesetzt - prüfen auf exakte Übereinstimmung
+				:: CRF-Wert ist gesetzt - prÃ¼fen auf exakte Ãœbereinstimmung
 				if "%CODECWAHL%"=="1" (
-					:: H.265 - prüfen auf exakte CRF-Übereinstimmung
+					:: H.265 - prÃ¼fen auf exakte CRF-Ãœbereinstimmung
 					if exist "!BASENAME!_crf!CRF_WERT!.mp4" set "RENDERED_EXISTS=1"
 				) else (
-					:: AV1 - prüfen auf exakte CRF-Übereinstimmung
+					:: AV1 - prÃ¼fen auf exakte CRF-Ãœbereinstimmung
 					if exist "!BASENAME!_AV1_crf!CRF_WERT!.mp4" set "RENDERED_EXISTS=1"
 				)
 			)
@@ -153,7 +153,7 @@ for %%F in (*.mp4) do (
 			) else (
 				echo Bearbeite: %%F
 
-				:: Prüfen ob DJI Action Video, falls ja, Datum aus Dateinamen verwenden
+				:: PrÃ¼fen ob DJI Action Video, falls ja, Datum aus Dateinamen verwenden
 				echo %%~nF | findstr /r /i "^DJI_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_" >nul
 				if !errorlevel! == 0 (
 					:: Dateiname ohne Extension
@@ -173,12 +173,12 @@ for %%F in (*.mp4) do (
 					echo [INFO] DJI Action Video erkannt, verwende Aufnahmedatum aus Dateinamen...
 
 				) else (
-					:: Prüfen ob DJI Mimo Datei, falls ja, Datum aus Dateinamen verwenden
+					:: PrÃ¼fen ob DJI Mimo Datei, falls ja, Datum aus Dateinamen verwenden
 					echo %%~nF | findstr /b /i "dji_mimo_" >nul
 					if !errorlevel! == 0 (
 						:: Dateiname ohne Extension
 						set "FNAME=%%~nF"
-						:: tokens=3,4: überspringe "dji_mimo"
+						:: tokens=3,4: Ã¼berspringe "dji_mimo"
 						for /f "tokens=3,4 delims=_" %%A in ("!FNAME!") do (
 							set "FILEDATE=%%A"
 							set "FILETIME=%%B"
@@ -207,7 +207,7 @@ for %%F in (*.mp4) do (
 								)
 							)
 						) else (
-							:: Änderungsdatum der Datei (Standard)
+							:: Ã„nderungsdatum der Datei (Standard)
 							for /f "usebackq delims=" %%T in (`powershell -NoLogo -NoProfile -Command "(Get-Item '%%F').LastWriteTime.ToString('yyyy:MM:dd HH:mm:ss')"`) do (
 								set "TIMESTAMP=%%T"
 							)
@@ -248,7 +248,7 @@ for %%F in (*.mp4) do (
 									set "CPU_USED=8"
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
-								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libaom-av1 -crf !CRF_WERT! -cpu-used !CPU_USED! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
+								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libaom-av1 -crf !CRF_WERT! -b:v 0 -cpu-used !CPU_USED! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							)
 						)
 
