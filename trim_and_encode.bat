@@ -1,8 +1,8 @@
-:: Version 2.4.2 - 2026-09-01 - @nurjns
+:: Version 2.4.3 - 2026-09-01 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
-title "Batch Video Cutter and Encoder"
+title Batch Video Cutter and Encoder
 
 where ffmpeg >nul 2>&1
 if errorlevel 1 (
@@ -22,8 +22,8 @@ if errorlevel 1 (
 
 :: User prompt: Codec selection
 echo Select Codec:
-echo 1 - H.265 - Good compression, faster encoding, broad support (Default)
-echo 2 - AV1 - Best compression, but very slow, for newer devices
+echo 1 - H.265 - Good compression, broad support (Default)
+echo 2 - AV1 - Best compression, speed depends on quality setting, for newer devices
 set /p CODECWAHL="Input (1 or 2): "
 
 if not "%CODECWAHL%"=="1" if not "%CODECWAHL%"=="2" (
@@ -62,12 +62,12 @@ if not "%CUT_END%"=="0" (
 set CRF_WERT=
 if "%CODECWAHL%"=="1" ( 
 	echo H.265 CRF value ^(18=high, 24=normal, 30=low, 35=very low^) - Leave empty = cut only 
-) else ( 
-	echo AV1 CRF value ^(18=very high, 22=high, 30=normal, 38=low, 45=very low^) - Leave empty = cut only 
+) else (
+	echo AV1 CRF value ^(18=very high, 22=high, 30=normal, 40=low, 50=very low^) - Leave empty = cut only 
 ) 
 set /p CRF_WERT="Which CRF value should be used? "
  
-if not "%CRF_WERT%" Ricardo (
+if not "%CRF_WERT%"=="" (
 	echo %CRF_WERT%| findstr /r "^[0-9][0-9]*$" >nul
 	if errorlevel 1 goto :CRF_FEHLER
 	if %CRF_WERT% LSS 16 goto :CRF_FEHLER
@@ -199,7 +199,7 @@ for %%F in (*.mp4) do (
 							for /f "usebackq delims=" %%T in (`exiftool.exe -s3 -CreateDate "%%F"`) do (
 								set "TIMESTAMP=%%T"
 							)
-							if "%TIMESTAMP%"=="0000:00:00 00:00:00" set "TIMESTAMP="
+							if "!TIMESTAMP!"=="0000:00:00 00:00:00" set "TIMESTAMP="
 							if not defined TIMESTAMP (
 								echo Warning: No recording date found for %%F, using modification date
 								for /f "usebackq delims=" %%T in (`powershell -NoLogo -NoProfile -Command "(Get-Item '%%F').LastWriteTime.ToString('yyyy:MM:dd HH:mm:ss')"`) do (
@@ -234,21 +234,22 @@ for %%F in (*.mp4) do (
 							)
 						) else (
 							if "%CODECWAHL%"=="1" (
+								:: H.265
 								set "OUTFILE=!OUTFILE!_crf!CRF_WERT!.mp4"
-								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libx265 -crf !CRF_WERT! -preset slow -pix_fmt yuv420p -tag:v hvc1 -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
+								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libx265 -crf !CRF_WERT! -preset medium -pix_fmt yuv420p -tag:v hvc1 -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							) else (
-								:: AV1 - dynamically determine cpu-used
-								if !CRF_WERT! LEQ 20 (
-									set "CPU_USED=2"
+								:: AV1
+								if !CRF_WERT! LEQ 22 (
+									set "PRESET=2"
 								) else if !CRF_WERT! LEQ 28 (
-									set "CPU_USED=4"
+									set "PRESET=3"
 								) else if !CRF_WERT! LEQ 35 (
-									set "CPU_USED=6"
+									set "PRESET=6"
 								) else (
-									set "CPU_USED=8"
+									set "PRESET=10"
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
-								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libaom-av1 -crf !CRF_WERT! -b:v 0 -cpu-used !CPU_USED! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
+								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libsvtav1 -crf !CRF_WERT! -preset !PRESET! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							)
 						)
 
