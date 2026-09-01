@@ -261,13 +261,13 @@ for %%F in (*.mp4) do (
 									set "PRESET=%PRESET_MANUAL%"
 								) else (
 									if !CRF_WERT! LEQ 22 (
-										set "PRESET=2"
-									) else if !CRF_WERT! LEQ 28 (
 										set "PRESET=3"
+									) else if !CRF_WERT! LEQ 28 (
+										set "PRESET=4"
 									) else if !CRF_WERT! LEQ 35 (
-										set "PRESET=6"
+										set "PRESET=5"
 									) else (
-										set "PRESET=10"
+										set "PRESET=8"
 									)
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
