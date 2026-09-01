@@ -1,4 +1,4 @@
-:: Version 2.4.5 - 01.09.2026 - @nurjns
+:: Version 2.4.6 - 01.09.2026 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
@@ -63,7 +63,7 @@ set CRF_WERT=
 if "%CODECWAHL%"=="1" ( 
 	echo H.265 CRF-Wert ^(18=hoch, 24=normal, 30=niedrig, 35=sehr niedrig^) - Leer lassen = nur schneiden 
 ) else (
-	echo AV1 CRF-Wert ^(20=sehr hoch, 26=hoch, 35=normal, 45=niedrig, 55=sehr niedrig^) - Leer lassen = nur schneiden 
+	echo AV1 CRF-Wert ^(22=sehr hoch, 28=hoch, 35=normal, 45=niedrig, 55=sehr niedrig^) - Leer lassen = nur schneiden 
 ) 
 set /p CRF_WERT="Welcher CRF-Wert soll verwendet werden? "
  
@@ -71,7 +71,7 @@ if not "%CRF_WERT%"=="" (
 	echo %CRF_WERT%| findstr /r "^[0-9][0-9]*$" >nul
 	if errorlevel 1 goto :CRF_FEHLER
 	if "%CRF_WERT%" LSS "16" goto :CRF_FEHLER
-	if "%CRF_WERT%" GTR "55" goto :CRF_FEHLER
+	if "%CRF_WERT%" GTR "60" goto :CRF_FEHLER
 )
 goto :CRF_OK
 :CRF_FEHLER
@@ -113,7 +113,7 @@ if /i "!TIMEZONE_NECESSARY!"=="y" (
 )
 
 :: Benutzerabfrage: Welches Datum als Aufnahmedatum verwenden?
-echo Welches Datum soll als Aufnahmedatum verwendet werden? Bei Videos von DJI und DJI Mimo wird automatisch das Datum aus dem Dateinamen verwendet. Bei Videos mit GPS-Daten aber angegebener Zeitzone wird Auswahl 1 empfohlen.
+echo Welches Datum soll als Aufnahmedatum verwendet werden? Bei Videos von DJI und DJI Mimo wird automatisch das Datum aus dem Dateinamen verwendet. Bei Videos mit GPS-Daten aber manuell angegebener Zeitzone wird Auswahl 1 empfohlen.
 echo 1 - Aenderungsdatum der Datei (Standard)
 echo 2 - Aufnahmedatum aus Metadaten
 set /p DATETOUSE="Eingabe (1 oder 2): "
