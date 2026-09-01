@@ -1,4 +1,4 @@
-:: Version 2.4.1 - 2026-08-30 - @nurjns
+:: Version 2.4.2 - 2026-09-01 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
@@ -63,7 +63,7 @@ set CRF_WERT=
 if "%CODECWAHL%"=="1" ( 
 	echo H.265 CRF value ^(18=high, 24=normal, 30=low, 35=very low^) - Leave empty = cut only 
 ) else ( 
-	echo AV1 CRF value ^(20=high, 30=normal, 38=low, 45=very low^) - Leave empty = cut only 
+	echo AV1 CRF value ^(18=very high, 22=high, 30=normal, 38=low, 45=very low^) - Leave empty = cut only 
 ) 
 set /p CRF_WERT="Which CRF value should be used? "
  
