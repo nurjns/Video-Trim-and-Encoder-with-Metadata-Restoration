@@ -1,4 +1,4 @@
-:: Version 2.4.1 - 30.08.2026 - @nurjns
+:: Version 2.4.2 - 01.09.2026 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
@@ -63,7 +63,7 @@ set CRF_WERT=
 if "%CODECWAHL%"=="1" ( 
 	echo H.265 CRF-Wert ^(18=hoch, 24=normal, 30=niedrig, 35=sehr niedrig^) - Leer lassen = nur schneiden 
 ) else ( 
-	echo AV1 CRF-Wert ^(20=hoch, 30=normal, 38=niedrig, 45=sehr niedrig^) - Leer lassen = nur schneiden 
+	echo AV1 CRF-Wert ^(18=sehr hoch, 22=hoch, 30=normal, 38=niedrig, 45=sehr niedrig^) - Leer lassen = nur schneiden 
 ) 
 set /p CRF_WERT="Welcher CRF-Wert soll verwendet werden? "
  
