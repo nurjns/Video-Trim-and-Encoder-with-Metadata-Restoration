@@ -63,15 +63,15 @@ set CRF_WERT=
 if "%CODECWAHL%"=="1" ( 
 	echo H.265 CRF value ^(18=high, 24=normal, 30=low, 35=very low^) - Leave empty = cut only 
 ) else (
-	echo AV1 CRF value ^(18=very high, 22=high, 30=normal, 40=low, 50=very low^) - Leave empty = cut only 
+	echo AV1 CRF value ^(20=very high, 24=high, 30=normal, 40=low, 50=very low^) - Leave empty = cut only 
 ) 
 set /p CRF_WERT="Which CRF value should be used? "
  
 if not "%CRF_WERT%"=="" (
 	echo %CRF_WERT%| findstr /r "^[0-9][0-9]*$" >nul
 	if errorlevel 1 goto :CRF_FEHLER
-	if %CRF_WERT% LSS 16 goto :CRF_FEHLER
-	if %CRF_WERT% GTR 50 goto :CRF_FEHLER
+	if "%CRF_WERT%" LSS "16" goto :CRF_FEHLER
+	if "%CRF_WERT%" GTR "50" goto :CRF_FEHLER
 )
 goto :CRF_OK
 :CRF_FEHLER
@@ -88,7 +88,7 @@ set /p PRESET_MANUAL="AV1 preset (0-13, 0=slow/small, 13=fast/large, leave empty
 if not "%PRESET_MANUAL%"=="" (
 	echo %PRESET_MANUAL%| findstr /r "^[0-9][0-9]*$" >nul
 	if errorlevel 1 goto :PRESET_FEHLER
-	if %PRESET_MANUAL% GTR 13 goto :PRESET_FEHLER
+	if "%PRESET_MANUAL%" GTR "13" goto :PRESET_FEHLER
 )
 goto :PRESET_DONE
 :PRESET_FEHLER
@@ -260,7 +260,7 @@ for %%F in (*.mp4) do (
 								if not "%PRESET_MANUAL%"=="" (
 									set "PRESET=%PRESET_MANUAL%"
 								) else (
-									if !CRF_WERT! LEQ 22 (
+									if !CRF_WERT! LEQ 24 (
 										set "PRESET=3"
 									) else if !CRF_WERT! LEQ 28 (
 										set "PRESET=4"
