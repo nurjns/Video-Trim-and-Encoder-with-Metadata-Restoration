@@ -1,4 +1,4 @@
-:: Version 2.4.3 - 01.09.2026 - @nurjns
+:: Version 2.4.4 - 01.09.2026 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
@@ -78,6 +78,24 @@ goto :CRF_OK
 echo Ungueltige Eingabe bei CRF-Wert^^!
 goto ASK_CRF
 :CRF_OK
+
+set "PRESET_MANUAL="
+if not "%CODECWAHL%"=="2" goto :PRESET_DONE
+
+:ASK_PRESET
+set "PRESET_MANUAL="
+set /p PRESET_MANUAL="AV1 Preset (0-13, 0=langsam/kleine Datei, 13=schnell/grosse Datei, leer lassen = automatisch): "
+if not "%PRESET_MANUAL%"=="" (
+	echo %PRESET_MANUAL%| findstr /r "^[0-9][0-9]*$" >nul
+	if errorlevel 1 goto :PRESET_FEHLER
+	if %PRESET_MANUAL% GTR 13 goto :PRESET_FEHLER
+)
+goto :PRESET_DONE
+:PRESET_FEHLER
+echo Ungueltiger Preset-Wert^^!
+goto ASK_PRESET
+
+:PRESET_DONE
 
 :: Benutzerabfrage: Zeitzone
 :: Automatisch Sommer-/Winterzeit erkennen für Deutschland
@@ -239,14 +257,18 @@ for %%F in (*.mp4) do (
 								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libx265 -crf !CRF_WERT! -preset medium -pix_fmt yuv420p -tag:v hvc1 -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							) else (
 								:: AV1
-								if !CRF_WERT! LEQ 22 (
-									set "PRESET=2"
-								) else if !CRF_WERT! LEQ 28 (
-									set "PRESET=3"
-								) else if !CRF_WERT! LEQ 35 (
-									set "PRESET=6"
+								if not "%PRESET_MANUAL%"=="" (
+									set "PRESET=%PRESET_MANUAL%"
 								) else (
-									set "PRESET=10"
+									if !CRF_WERT! LEQ 22 (
+										set "PRESET=2"
+									) else if !CRF_WERT! LEQ 28 (
+										set "PRESET=3"
+									) else if !CRF_WERT! LEQ 35 (
+										set "PRESET=6"
+									) else (
+										set "PRESET=10"
+									)
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
 								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libsvtav1 -crf !CRF_WERT! -preset !PRESET! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
