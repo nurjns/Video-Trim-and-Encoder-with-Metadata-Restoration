@@ -1,14 +1,3 @@
-:: Dieses Skript verarbeitet alle .mp4-Dateien im aktuellen Verzeichnis, entfernt die angegebenen Sekunden vom Anfang und Ende und komprimiert sie optional per FFmpeg mit einem wählbaren CRF-Wert. Nur Videos mit ausreichender Länge (Videolänge + 3 > Schnittbereich) werden bearbeitet. Der ursprüngliche Zeitstempel (Änderungsdatum) der Datei wird im Nachhinein neu gesetzt, und die Ausgabedateien erhalten angepasste Namen (_cut.mp4 oder _crfXX.mp4).
-:: Für Videos von Action-Cams, die kein GPS besitzen und daher keine Zeitzone in den Metadaten speichern, erfolgt eine extra Abfrage zur Angabe einer Zeitzone. Häufig ist auch das Aufnahmedatum in den Metadaten falsch, während nur das Änderungsdatum der Datei die korrekte Zeit enthält. Um ein korrektes Aufnahmedatum in Galerie-Programmen (z. B. Google Fotos, Immich) zu erhalten, wird das Änderungsdatum als Aufnahmedatum in die Metadaten geschrieben. Wichtig: In der Kamera muss stets die lokale Uhrzeit des Aufnahmeortes eingestellt sein. Das Skript kann auch für andere Videos genutzt werden.
-:: Bei Videos, die von einer DJI Action Kamera oder der DJI Mimo App stammen, wird automatisch das Datum aus dem Dateinamen verwendet, unabhängig von der Eingabe in der Script-Abfrage. Zusätzlich wird die Zeitzone aus der Abfrage berücksichtigt.
-:: Das Script verarbeitet alle .mp4-Dateien im aktuellen Verzeichnis, entfernt die angegebenen Sekunden vom Anfang und Ende und komprimiert sie optional per FFmpeg mit einem wählbaren CRF-Wert. Nur Videos mit ausreichender Länge (Videolänge + 3 > Schnittbereich) werden bearbeitet. Kodiert werden kann als H.265 und AV1. Die Ausgabedateien erhalten angepasste Namen.
-::
-:: Verwendung des Scripts:
-::
-:: Script als z. B. "encode.bat" anlegen.
-:: "ffmpeg-release-essentials.zip" hier herunterladen, entpacken und aus dem Ordner "bin" die ffmpeg.exe und ffprobe.exe in das Verzeichnis kopieren: https://www.gyan.dev/ffmpeg/builds/
-:: "exiftool-XXX.zip" hier herunterladen, entpacken, in das Verzeichnis kopieren und die .exe-Datei umbenennen in "exiftool.exe": https://exiftool.org/
-::
 :: Version 2.4.7 - 03.09.2026 - @nurjns
 
 @echo off
