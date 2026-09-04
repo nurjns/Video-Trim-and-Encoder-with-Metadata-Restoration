@@ -1,4 +1,4 @@
-:: Version 2.4.7 - 03.09.2026 - @nurjns
+:: Version 2.4.8 - 04.09.2026 - @nurjns
 
 @echo off
 setlocal enabledelayedexpansion
@@ -249,7 +249,7 @@ for %%F in (*.mp4) do (
 									set "PRESET=8"
 								)
 								set "OUTFILE=!OUTFILE!_AV1_crf!CRF_WERT!.mp4"
-								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libsvtav1 -crf !CRF_WERT! -preset !PRESET! -pix_fmt yuv420p -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
+								ffmpeg -y -ss !CUT_START! -i "%%F" -t !REMAINING! -c:v libsvtav1 -crf !CRF_WERT! -preset !PRESET! -g 240 -pix_fmt yuv420p10le -svtav1-params tune=0 -movflags +faststart !AUDIO_PARAM! "!OUTFILE!"
 							)
 						)
 
